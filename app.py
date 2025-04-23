@@ -1,20 +1,22 @@
 from flask import Flask, request, jsonify
-from PIL import Image
 import pytesseract
+from PIL import Image
 import io
 import base64
 
 app = Flask(__name__)
 
 @app.route("/ocr", methods=["POST"])
-def ocr_endpoint():
+def ocr():
     data = request.get_json()
-    if not data or "image_base64" not in data:
-        return jsonify({"error": "No image_base64 provided"}), 400
+    image_base64 = data.get("image_base64")
+
+    if not image_base64:
+        return jsonify({"error": "No image provided"}), 400
 
     try:
-        image_data = base64.b64decode(data["image_base64"])
-        image = Image.open(io.BytesIO(image_data))
+        image_bytes = base64.b64decode(image_base64)
+        image = Image.open(io.BytesIO(image_bytes))
         text = pytesseract.image_to_string(image)
         return jsonify({"text": text})
     except Exception as e:
