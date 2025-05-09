@@ -1,13 +1,13 @@
-
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
 import json
+import os
 
 app = Flask(__name__)
 CORS(app)
 
-OCR_SPACE_API_KEY = "K88111451588957"
+OCR_SPACE_API_KEY = os.getenv("OCR_SPACE_API_KEY")
 
 @app.route("/ocr", methods=["POST"])
 def ocr():
